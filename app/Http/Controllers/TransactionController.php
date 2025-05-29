@@ -21,19 +21,34 @@ class TransactionController extends Controller
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
             'description' => 'required|string',
-
         ]);
 
+        $user_id = $requestData['user_id'];
+        $amount = $requestData['amount'];
+
+        // Hitung saldo user (total topup - total transaksi)
+        $totalTopup = Topup::where('user_id', $user_id)->sum('amount');
+        $totalTransaction = Transaction::where('user_id', $user_id)->sum('amount');
+        $saldo = $totalTopup - $totalTransaction;
+
+        if ($saldo < $amount) {
+            return response()->json([
+                'message' => 'Saldo tidak cukup, silakan lakukan topup terlebih dahulu.'
+            ], 400); // 400 Bad Request
+        }
+
+        // Jika saldo cukup, buat transaksi
         $transaction = new Transaction([
-            'user_id' => $requestData['user_id'],
-            'amount' => $requestData['amount'],
+            'user_id' => $user_id,
+            'amount' => $amount,
             'description' => $requestData['description'],
-
         ]);
-
         $transaction->save();
 
-        return response()->json(['message' => 'Transaction created successfully', 'transaction' => $transaction], 201);
+        return response()->json([
+            'message' => 'Transaction created successfully',
+            'transaction' => $transaction
+        ], 201);
     }
 
     public function show(string $id)

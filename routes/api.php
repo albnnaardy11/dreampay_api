@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TopupController;
 use App\Http\Controllers\TransactionController;
-
+use App\Http\Controllers\LeaderboardController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,21 +22,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('allusers', [UserController::class, 'index']);
-Route::get('datausers/{id}', [UserController::class, 'show']);
+Route::get('getusers/{id}', [UserController::class, 'show']);
 Route::post('postusers', [UserController::class, 'store']);
 Route::put('updateusers/{id}', [UserController::class, 'update']);
 Route::delete('deletusers/{id}', [UserController::class, 'destroy']);
 
 Route::get('alltopup', [TopupController::class, 'index']);
-Route::get('datatopup/{id}', [TopupController::class, 'show']);
+Route::get('gettopup/{id}', [TopupController::class, 'show']);
 Route::post('posttopup', [TopupController::class, 'store']);
 Route::post('updatetopup/{id}', [TopupController::class, 'update']);
 Route::delete('delettopup/{id}', [TopupController::class, 'destroy']);
 
 Route::get('alltransaction', [TransactionController::class, 'index']);
-Route::get('datatransaction/{id}', [TransactionController::class, 'show']);
+Route::get('gettransaction/{id}', [TransactionController::class, 'show']);
 Route::post('posttransaction', [TransactionController::class, 'store']);
 Route::post('updatetransaction/{id}', [TransactionController::class, 'update']);
 Route::delete('delettransaction/{id}', [TransactionController::class, 'destroy']);
 
 
+
+Route::get('leaderboard', [LeaderboardController::class, 'showjuragan']);

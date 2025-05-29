@@ -9,14 +9,11 @@ class TopupController extends Controller
 {
 
     public function index()
-{
-    $user_id = auth()->id();
+    {
+        $userTopups = Topup::all();
 
-    $userTopups = Topup::where('user_id', $user_id)->get();
-
-    // Return the topup records as a JSON response
-    return response()->json($userTopups, 200);
-}
+        return response()->json($userTopups, 200);
+    }
 
 
     public function store(Request $request)
@@ -50,34 +47,34 @@ class TopupController extends Controller
     }
 
     public function update(Request $request, string $id)
-    {
-        // Validate the request data
-        $requestData = $request->validate([
-            'amount' => 'required|numeric',
-        ]);
+{
+    $requestData = $request->validate([
+        'amount' => 'required|numeric',
+    ]);
 
-        $topup = auth()->user()->topups->find($id);
+    $topup = Topup::find($id);
 
-        if (!$topup) {
-            return response()->json(['message' => 'Topup not found'], 404);
-        }
-
-        $topup->update($requestData);
-
-        return response()->json(['message' => 'Topup updated successfully'], 200);
+    if (!$topup) {
+        return response()->json(['message' => 'Topup not found'], 404);
     }
 
-    public function destroy(string $id)
-    {
-        // Logic to delete the specific topup record for the current user
-        $topup = auth()->user()->topups->find($id);
+    $topup->update($requestData);
 
-        if (!$topup) {
-            return response()->json(['message' => 'Topup not found'], 404);
-        }
+    return response()->json(['message' => 'Topup updated successfully'], 200);
+}
 
-        $topup->delete();
 
-        return response()->json(['message' => 'Topup deleted successfully'], 200);
+public function destroy(string $id)
+{
+    $topup = Topup::find($id);
+
+    if (!$topup) {
+        return response()->json(['message' => 'Topup not found'], 404);
     }
+
+    $topup->delete();
+
+    return response()->json(['message' => 'Topup deleted successfully'], 200);
+}
+
 }

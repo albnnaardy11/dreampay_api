@@ -1,4 +1,4 @@
-name: Deploy Documentation
+name: Deploy Docs v22 (FIXED)
 
 on:
   push:

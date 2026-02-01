@@ -21,6 +21,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \Illuminate\Support\Facades\Gate::define('admin-only', function ($user) {
+            return $user->role === 'admin';
+        });
+
+        \Illuminate\Support\Facades\Gate::define('merchant-only', function ($user) {
+            return $user->role === 'merchant';
+        });
     }
 }

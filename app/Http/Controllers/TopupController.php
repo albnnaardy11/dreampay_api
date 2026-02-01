@@ -20,16 +20,37 @@ class TopupController extends Controller
     {
         $requestData = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:1000',
         ]);
 
-        $topup = new Topup([
-            'user_id' => $requestData['user_id'],
-            'amount' => $requestData['amount'],
-        ]);
-        $topup->save();
+        try {
+            return \Illuminate\Support\Facades\DB::transaction(function () use ($requestData) {
+                $topup = Topup::create([
+                    'user_id' => $requestData['user_id'],
+                    'amount' => $requestData['amount'],
+                ]);
 
-        return response()->json(['message' => 'Topup created successfully'], 201);
+                // Update User Balance
+                $user = \App\Models\User::find($requestData['user_id']);
+                $user->increment('balance', $requestData['amount']);
+
+                // Record Transaction
+                \App\Models\Transaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $requestData['amount'],
+                    'description' => 'Topup Saldo via Admin/Gateway',
+                    'type' => 'topup',
+                    'status' => 'success',
+                ]);
+
+                return response()->json([
+                    'message' => 'Topup successful',
+                    'current_balance' => $user->balance
+                ], 201);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Topup failed', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(string $id)

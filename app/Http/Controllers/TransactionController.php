@@ -2,89 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Topup;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::all();
-        return response()->json(['transactions' => $transactions], 200);
+        $transactions = Transaction::with(['user', 'recipient', 'category'])->latest()->get();
+        return response()->json($transactions, 200);
+    }
+
+    public function userHistory(Request $request)
+    {
+        $transactions = Transaction::where('user_id', $request->user()->id)
+            ->with(['recipient', 'category'])
+            ->latest()
+            ->get();
+            
+        return response()->json($transactions, 200);
     }
 
     public function store(Request $request)
     {
-        $requestData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'amount' => 'required|numeric',
+            'amount' => 'required|numeric|min:1',
             'description' => 'required|string',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
 
-        $user_id = $requestData['user_id'];
-        $amount = $requestData['amount'];
-
-        // Hitung saldo user (total topup - total transaksi)
-        $totalTopup = Topup::where('user_id', $user_id)->sum('amount');
-        $totalTransaction = Transaction::where('user_id', $user_id)->sum('amount');
-        $saldo = $totalTopup - $totalTransaction;
-
-        if ($saldo < $amount) {
-            return response()->json([
-                'message' => 'Saldo tidak cukup, silakan lakukan topup terlebih dahulu.'
-            ], 400); // 400 Bad Request
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
 
-        // Jika saldo cukup, buat transaksi
-        $transaction = new Transaction([
-            'user_id' => $user_id,
-            'amount' => $amount,
-            'description' => $requestData['description'],
-        ]);
-        $transaction->save();
+        try {
+            return DB::transaction(function () use ($request) {
+                $user = User::where('id', $request->user_id)->lockForUpdate()->first();
 
-        return response()->json([
-            'message' => 'Transaction created successfully',
-            'transaction' => $transaction
-        ], 201);
+                if (!$user) {
+                    return response()->json(['message' => 'User not found'], 404);
+                }
+
+                if ($user->balance < $request->amount) {
+                    return response()->json(['message' => 'Insufficient balance'], 400);
+                }
+
+                $user->decrement('balance', $request->amount);
+
+                $transaction = Transaction::create([
+                    'user_id' => $user->id,
+                    'amount' => $request->amount,
+                    'description' => $request->description,
+                    'type' => 'payment',
+                    'status' => 'success',
+                    'category_id' => $request->category_id,
+                ]);
+
+                // Award points (example: 1 point for every 1000 spent)
+                $points = floor($request->amount / 1000);
+                $user->increment('points', $points);
+
+                // Update Tier logic
+                if ($user->points > 1000) {
+                    $user->tier = 'Gold';
+                } elseif ($user->points > 500) {
+                    $user->tier = 'Silver';
+                }
+                $user->save();
+
+                return response()->json([
+                    'message' => 'Payment successful',
+                    'transaction' => $transaction,
+                    'current_balance' => $user->balance,
+                    'points_earned' => $points,
+                    'current_tier' => $user->tier
+                ], 201);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Payment failed', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(string $id)
     {
-        $transaction = Transaction::find($id);
+        $transaction = Transaction::with(['user', 'recipient', 'category'])->find($id);
 
-        if ($transaction) {
-            return response()->json(['transaction' => $transaction], 200);
-        } else {
+        if (!$transaction) {
             return response()->json(['message' => 'Transaction not found'], 404);
         }
-    }
 
-    public function update(Request $request, string $id)
-    {
-        $transaction = Transaction::find($id);
-
-        if ($transaction) {
-            $transaction->amount = $request->input('amount');
-            $transaction->save();
-
-            return response()->json(['message' => 'Transaction updated successfully', 'transaction' => $transaction], 200);
-        } else {
-            return response()->json(['message' => 'Transaction not found'], 404);
-        }
+        return response()->json($transaction, 200);
     }
 
     public function destroy(string $id)
     {
         $transaction = Transaction::find($id);
 
-        if ($transaction) {
-            $transaction->delete();
-            return response()->json(['message' => 'Transaction deleted successfully'], 200);
-        } else {
+        if (!$transaction) {
             return response()->json(['message' => 'Transaction not found'], 404);
         }
+
+        $transaction->delete();
+        return response()->json(['message' => 'Transaction deleted successfully'], 200);
     }
 }

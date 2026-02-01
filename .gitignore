@@ -1,6 +1,7 @@
-/.phpunit.cache
+# .gitignore for DreamPay API
+
+# Laravel
 /node_modules
-/public/build
 /public/hot
 /public/storage
 /storage/*.key
@@ -17,3 +18,27 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Docusaurus
+docs-site/node_modules
+docs-site/.docusaurus
+docs-site/.cache-loader
+docs-site/build
+docs-site/.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+*.swp
+*.swo
+*~
+.project
+.settings
+.buildpath
+
+# Logs
+*.log
+storage/logs/*
+!storage/logs/.gitkeep

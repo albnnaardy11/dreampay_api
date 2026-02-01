@@ -1,0 +1,36 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Shell scripts should always use LF
+*.sh text eol=lf
+
+# PowerShell scripts should use CRLF
+*.ps1 text eol=crlf
+
+# Documents
+*.md text
+*.txt text
+
+# Graphics
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg text
+
+# Scripts
+*.js text
+*.ts text
+*.jsx text
+*.tsx text
+
+# Styles
+*.css text
+*.scss text
+
+# Configs
+*.json text
+*.yml text
+*.yaml text
+*.toml text

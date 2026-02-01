@@ -4,10 +4,10 @@ This file ensures GitHub Pages serves the documentation correctly.
 
 ## Current Configuration
 
-- **Repository:** albnnaardy11/dreampay_api
+- **Repository:** albnnaardy11/dreampay-api
 - **Branch:** gh-pages
-- **URL:** https://albnnaardy11.github.io/dreampay_api/
-- **Base URL:** /dreampay_api/
+- **URL:** https://albnnaardy11.github.io/dreampay-api/
+- **Base URL:** /dreampay-api/
 
 ## Setup Instructions
 
@@ -20,7 +20,7 @@ This file ensures GitHub Pages serves the documentation correctly.
 ## Verification
 
 After deployment, verify:
-- [ ] Site is accessible at https://albnnaardy11.github.io/dreampay_api/
+- [ ] Site is accessible at https://albnnaardy11.github.io/dreampay-api/
 - [ ] All pages load correctly
 - [ ] Navigation works
 - [ ] API documentation is visible

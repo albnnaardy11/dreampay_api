@@ -9,9 +9,9 @@ const config: Config = {
 
   // Konfigurasi Deployment GitHub Pages
   url: 'https://albnnaardy11.github.io',
-  baseUrl: '/dreampay_api/', 
+  baseUrl: '/dreampay-api/', 
   organizationName: 'albnnaardy11',
-  projectName: 'dreampay_api',
+  projectName: 'dreampay-api',
   deploymentBranch: 'gh-pages',
   trailingSlash: false,
 

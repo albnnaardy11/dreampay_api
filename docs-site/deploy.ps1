@@ -8,56 +8,56 @@ Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Function to print colored output
-function Print-Success {
+function Write-Success {
     param([string]$Message)
     Write-Host "✓ $Message" -ForegroundColor Green
 }
 
-function Print-Error {
+function Write-ErrorMessage {
     param([string]$Message)
     Write-Host "✗ $Message" -ForegroundColor Red
 }
 
-function Print-Info {
+function Write-Info {
     param([string]$Message)
     Write-Host "ℹ $Message" -ForegroundColor Yellow
 }
 
 # Check Node.js version
-function Check-NodeVersion {
-    Print-Info "Checking Node.js version..."
+function Test-NodeVersion {
+    Write-Info "Checking Node.js version..."
     
     try {
         $nodeVersion = node -v
         $versionNumber = [int]($nodeVersion -replace 'v(\d+)\..*', '$1')
         
         if ($versionNumber -lt 22) {
-            Print-Error "Node.js version must be >= 22.0"
-            Print-Info "Current version: $nodeVersion"
-            Print-Info "Please upgrade Node.js to v22 or higher"
-            Print-Info "Download from: https://nodejs.org/"
-            Print-Info "Or run: nvm install 22 && nvm use 22"
+            Write-ErrorMessage "Node.js version must be >= 22.0"
+            Write-Info "Current version: $nodeVersion"
+            Write-Info "Please upgrade Node.js to v22 or higher"
+            Write-Info "Download from: https://nodejs.org/"
+            Write-Info "Or run: nvm install 22 && nvm use 22"
             exit 1
         }
         
-        Print-Success "Node.js version OK: $nodeVersion"
+        Write-Success "Node.js version OK: $nodeVersion"
     }
     catch {
-        Print-Error "Node.js not found. Please install Node.js >= 22.0"
-        Print-Info "Download from: https://nodejs.org/"
+        Write-ErrorMessage "Node.js not found. Please install Node.js >= 22.0"
+        Write-Info "Download from: https://nodejs.org/"
         exit 1
     }
 }
 
-# Clean build
-function Clean-Build {
-    Print-Info "Cleaning previous build..."
+# Clear build
+function Clear-BuildCache {
+    Write-Info "Cleaning previous build..."
     
     try {
         npm run clear
     }
     catch {
-        Print-Info "Clear command not available, skipping..."
+        Write-Info "Clear command not available, skipping..."
     }
     
     if (Test-Path "build") {
@@ -68,46 +68,46 @@ function Clean-Build {
         Remove-Item -Recurse -Force "node_modules\.cache"
     }
     
-    Print-Success "Clean completed"
+    Write-Success "Clean completed"
 }
 
 # Install dependencies
 function Install-Dependencies {
-    Print-Info "Installing dependencies..."
+    Write-Info "Installing dependencies..."
     npm install
-    Print-Success "Dependencies installed"
+    Write-Success "Dependencies installed"
 }
 
 # Build documentation
 function Build-Documentation {
-    Print-Info "Building documentation..."
+    Write-Info "Building documentation..."
     npm run build
-    Print-Success "Build completed"
+    Write-Success "Build completed"
 }
 
 # Test build locally
-function Test-Build {
-    Print-Info "Testing build locally..."
-    Print-Info "Starting local server on http://localhost:3000"
+function Test-BuildLocally {
+    Write-Info "Testing build locally..."
+    Write-Info "Starting local server on http://localhost:3000"
     npm run serve
 }
 
 # Deploy to GitHub Pages
-function Deploy-GitHub {
-    Print-Info "Deploying to GitHub Pages..."
+function Invoke-GitHubDeploy {
+    Write-Info "Deploying to GitHub Pages..."
     npm run deploy:gh
-    Print-Success "Deployed to GitHub Pages"
-    Print-Info "Visit: https://albnnaardy11.github.io/dreampay_api/"
+    Write-Success "Deployed to GitHub Pages"
+    Write-Info "Visit: https://albnnaardy11.github.io/dreampay_api/"
 }
 
 # Full deployment
-function Full-Deployment {
-    Check-NodeVersion
-    Clean-Build
+function Start-FullDeployment {
+    Test-NodeVersion
+    Clear-BuildCache
     Install-Dependencies
     Build-Documentation
-    Deploy-GitHub
-    Print-Success "Full deployment completed!"
+    Invoke-GitHubDeploy
+    Write-Success "Full deployment completed!"
 }
 
 # Main menu
@@ -127,7 +127,7 @@ function Show-Menu {
     
     switch ($option) {
         "1" {
-            Clean-Build
+            Clear-BuildCache
             Show-Menu
         }
         "2" {
@@ -139,26 +139,26 @@ function Show-Menu {
             Show-Menu
         }
         "4" {
-            Test-Build
+            Test-BuildLocally
         }
         "5" {
-            Deploy-GitHub
+            Invoke-GitHubDeploy
             Show-Menu
         }
         "6" {
-            Full-Deployment
+            Start-FullDeployment
         }
         "7" {
-            Print-Info "Goodbye!"
+            Write-Info "Goodbye!"
             exit 0
         }
         default {
-            Print-Error "Invalid option"
+            Write-ErrorMessage "Invalid option"
             Show-Menu
         }
     }
 }
 
 # Run
-Check-NodeVersion
+Test-NodeVersion
 Show-Menu

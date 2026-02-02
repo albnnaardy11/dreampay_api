@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["name","price","stock"],"properties":{"name":{"type":"string","example":"Es Teh"},"price":{"type":"number","example":3000},"stock":{"type":"integer","example":100},"description":{"type":"string","example":"Es teh manis segar"}},"type":"object"}}}}}

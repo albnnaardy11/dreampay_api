@@ -13,7 +13,32 @@ use Illuminate\Support\Facades\Validator;
 class SplitBillController extends Controller
 {
     /**
-     * Create a new Split Bill
+     * @OA\Post(
+     *     path="/split-bill",
+     *     summary="Create a new Split Bill",
+     *     tags={"Split Bill"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"total_amount","description","participants"},
+     *             @OA\Property(property="total_amount", type="number", example=60000),
+     *             @OA\Property(property="description", type="string", example="Dinner split"),
+     *             @OA\Property(property="participants", type="array", @OA\Items(
+     *                 @OA\Property(property="user_id", type="integer", example=2),
+     *                 @OA\Property(property="amount", type="number", example=30000)
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Split Bill created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Split Bill created successfully"),
+     *             @OA\Property(property="split_bill", ref="#/components/schemas/SplitBill")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -60,7 +85,30 @@ class SplitBillController extends Controller
     }
 
     /**
-     * Pay a specific Split Bill member share
+     * @OA\Post(
+     *     path="/split-bill/pay/{memberId}",
+     *     summary="Pay a specific Split Bill member share",
+     *     tags={"Split Bill"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="memberId", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"pin"},
+     *             @OA\Property(property="pin", type="string", example="123456")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Payment successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Payment successful"),
+     *             @OA\Property(property="current_balance", type="number")
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Invalid PIN"),
+     *     @OA\Response(response=404, description="Bill not found")
+     * )
      */
     public function pay(Request $request, $memberId)
     {
@@ -148,7 +196,17 @@ class SplitBillController extends Controller
     }
 
     /**
-     * Get bills created by me
+     * @OA\Get(
+     *     path="/split-bill/created",
+     *     summary="Get bills created by me",
+     *     tags={"Split Bill"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of created bills",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/SplitBill"))
+     *     )
+     * )
      */
     public function myCreatedBills(Request $request)
     {
@@ -161,7 +219,17 @@ class SplitBillController extends Controller
     }
 
     /**
-     * Get bills I need to pay
+     * @OA\Get(
+     *     path="/split-bill/incoming",
+     *     summary="Get bills I need to pay",
+     *     tags={"Split Bill"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of incoming bills",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/SplitBillMember"))
+     *     )
+     * )
      */
     public function myIncomingBills(Request $request)
     {

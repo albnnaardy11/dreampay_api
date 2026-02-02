@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"Payment successful","content":{"application/json":{"schema":{"properties":{"message":{"type":"string","example":"Payment successful"},"merchant_balance":{"type":"number"}},"type":"object"}}}},"403":{"description":"Only merchants can perform this action"},"404":{"description":"Santri not found"}}}

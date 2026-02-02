@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["user_id","amount"],"properties":{"user_id":{"type":"integer","example":1},"amount":{"type":"number","example":50000}},"type":"object"}}}}}

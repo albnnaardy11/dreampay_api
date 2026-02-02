@@ -1,0 +1,1 @@
+{"responses":{"201":{"description":"Topup successful","content":{"application/json":{"schema":{"properties":{"message":{"type":"string","example":"Topup successful"},"current_balance":{"type":"number"}},"type":"object"}}}},"401":{"description":"Unauthorized"}}}

@@ -20,8 +20,15 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            style={{margin: '0 10px'}}
+            to="/docs/deployment">
+            Getting Started 🚀
+          </Link>
+          <Link
+            className="button button--outline button--secondary button--lg"
+            style={{margin: '0 10px', color: 'white', borderColor: 'white'}}
+            to="/docs/api">
+            API Reference 📚
           </Link>
         </div>
       </div>

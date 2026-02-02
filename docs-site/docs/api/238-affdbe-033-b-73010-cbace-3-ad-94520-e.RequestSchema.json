@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["user_id","amount","description"],"properties":{"user_id":{"type":"integer","example":1},"amount":{"type":"number","example":15000},"description":{"type":"string","example":"Beli Nasi Goreng"},"category_id":{"type":"integer","example":2}},"type":"object"}}}}}

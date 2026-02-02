@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"Payment successful","content":{"application/json":{"schema":{"properties":{"message":{"type":"string","example":"Payment successful"},"current_balance":{"type":"number"}},"type":"object"}}}},"403":{"description":"Invalid PIN"},"404":{"description":"Bill not found"}}}

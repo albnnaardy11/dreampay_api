@@ -10,6 +10,34 @@ use Illuminate\Support\Facades\Validator;
 
 class TransferController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/transfer",
+     *     summary="Transfer balance to another user",
+     *     tags={"Transactions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"recipient_email","amount","pin"},
+     *             @OA\Property(property="recipient_email", type="string", format="email", example="santri2@example.com"),
+     *             @OA\Property(property="amount", type="number", example=10000),
+     *             @OA\Property(property="pin", type="string", example="123456")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transfer successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Transfer successful"),
+     *             @OA\Property(property="current_balance", type="number")
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid data or insufficient balance"),
+     *     @OA\Response(response=403, description="Invalid PIN"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function transfer(Request $request)
     {
         $validator = Validator::make($request->all(), [

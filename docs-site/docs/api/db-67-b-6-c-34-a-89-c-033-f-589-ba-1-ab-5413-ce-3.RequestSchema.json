@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["qr_code","amount"],"properties":{"qr_code":{"type":"string","example":"DP-ABC123XYZ"},"amount":{"type":"number","example":15000},"description":{"type":"string","example":"Beli Nasi Goreng"}},"type":"object"}}}}}

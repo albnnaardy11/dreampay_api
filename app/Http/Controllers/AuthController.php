@@ -30,7 +30,7 @@ class AuthController extends Controller
      *         description="User registered successfully",
      *         @OA\JsonContent(
      *             @OA\Property(property="message", type="string", example="User registered successfully"),
-     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="access_token", type="string", example="1|qh37J8dJ0lS6..."),
      *             @OA\Property(property="token_type", type="string", example="Bearer")
      *         )
      *     ),
@@ -90,7 +90,7 @@ class AuthController extends Controller
      *         response=200,
      *         description="Login successful",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="access_token", type="string", example="1|qh37J8dJ0lS6..."),
      *             @OA\Property(property="token_type", type="string", example="Bearer")
      *         )
      *     ),
@@ -114,12 +114,40 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/logout",
+     *     summary="Logout and revoke current token",
+     *     tags={"Authentication"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logged out successfully",
+     *         @OA\JsonContent(@OA\Property(property="message", type="string", example="Logged out successfully"))
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/profile",
+     *     summary="Get authenticated user profile",
+     *     tags={"Authentication"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="User profile data",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function profile(Request $request)
     {
         return response()->json($request->user());

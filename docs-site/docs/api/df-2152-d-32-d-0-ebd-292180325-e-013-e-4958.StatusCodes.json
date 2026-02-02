@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"List of topups","content":{"application/json":{"schema":{"type":"array","items":{"title":"Topup","description":"Topup model schema","properties":{"id":{"type":"integer","example":1},"user_id":{"type":"integer","example":1},"amount":{"type":"number","example":50000},"created_at":{"type":"string","format":"date-time"}},"type":"object"}}}}}}}

@@ -1,0 +1,1 @@
+{"responses":{"200":{"description":"Transfer successful","content":{"application/json":{"schema":{"properties":{"message":{"type":"string","example":"Transfer successful"},"current_balance":{"type":"number"}},"type":"object"}}}},"400":{"description":"Invalid data or insufficient balance"},"401":{"description":"Unauthorized"},"403":{"description":"Invalid PIN"}}}

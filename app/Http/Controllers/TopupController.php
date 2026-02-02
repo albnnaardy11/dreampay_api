@@ -8,6 +8,19 @@ use Illuminate\Http\Request;
 class TopupController extends Controller
 {
 
+    /**
+     * @OA\Get(
+     *     path="/topups",
+     *     summary="List all topup requests (Admin)",
+     *     tags={"Topups"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of topups",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Topup"))
+     *     )
+     * )
+     */
     public function index()
     {
         $userTopups = Topup::all();
@@ -16,6 +29,31 @@ class TopupController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/topups",
+     *     summary="Create a new topup (Admin/Gateway)",
+     *     tags={"Topups"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"user_id","amount"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="amount", type="number", example=50000)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Topup successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Topup successful"),
+     *             @OA\Property(property="current_balance", type="number")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function store(Request $request)
     {
         $requestData = $request->validate([
@@ -53,6 +91,21 @@ class TopupController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/topups/{id}",
+     *     summary="Get topup details",
+     *     tags={"Topups"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Topup details",
+     *         @OA\JsonContent(ref="#/components/schemas/Topup")
+     *     ),
+     *     @OA\Response(response=404, description="Topup not found")
+     * )
+     */
     public function show(string $id)
     {
         // Ganti dengan cara Anda mengambil data topup, misalnya:

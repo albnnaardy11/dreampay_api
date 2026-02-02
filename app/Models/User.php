@@ -6,6 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     title="User",
+ *     description="User model schema",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+ *     @OA\Property(property="role", type="string", example="santri"),
+ *     @OA\Property(property="balance", type="number", format="float", example=50000),
+ *     @OA\Property(property="points", type="integer", example=100),
+ *     @OA\Property(property="tier", type="string", example="Bronze"),
+ *     @OA\Property(property="qr_code", type="string", example="DP-ABC123XYZ")
+ * )
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory;

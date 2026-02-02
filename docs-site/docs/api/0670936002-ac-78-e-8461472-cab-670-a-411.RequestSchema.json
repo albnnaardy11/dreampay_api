@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["recipient_email","amount","pin"],"properties":{"recipient_email":{"type":"string","format":"email","example":"santri2@example.com"},"amount":{"type":"number","example":10000},"pin":{"type":"string","example":"123456"}},"type":"object"}}}}}

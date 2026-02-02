@@ -18,8 +18,8 @@ use Illuminate\Routing\Controller as BaseController;
  * )
  * 
  * @OA\Server(
- *     url="http://localhost/api",
- *     description="Local Development Server"
+ *     url="https://albnnaardy11.github.io/dreampay-api",
+ *     description="GitHub Pages Mock Server (Documentation Only)"
  * )
  * 
  * @OA\Server(

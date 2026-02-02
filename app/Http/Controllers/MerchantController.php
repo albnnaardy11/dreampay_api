@@ -13,7 +13,31 @@ use Illuminate\Support\Facades\Validator;
 class MerchantController extends Controller
 {
     /**
-     * Merchant scans Santri QR Code to process payment
+     * @OA\Post(
+     *     path="/merchant/scan-and-pay",
+     *     summary="Merchant scans Santri QR Code to process payment",
+     *     tags={"Merchant"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"qr_code","amount"},
+     *             @OA\Property(property="qr_code", type="string", example="DP-ABC123XYZ"),
+     *             @OA\Property(property="amount", type="number", example=15000),
+     *             @OA\Property(property="description", type="string", example="Beli Nasi Goreng")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Payment successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Payment successful"),
+     *             @OA\Property(property="merchant_balance", type="number")
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Only merchants can perform this action"),
+     *     @OA\Response(response=404, description="Santri not found")
+     * )
      */
     public function scanAndPay(Request $request)
     {
@@ -89,7 +113,17 @@ class MerchantController extends Controller
     }
 
     /**
-     * Manage Products (Toko API)
+     * @OA\Get(
+     *     path="/merchant/products",
+     *     summary="List merchant products",
+     *     tags={"Merchant"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of products",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product"))
+     *     )
+     * )
      */
     public function listProducts(Request $request)
     {
@@ -97,6 +131,29 @@ class MerchantController extends Controller
         return response()->json($products);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/merchant/products",
+     *     summary="Add a new product",
+     *     tags={"Merchant"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","price","stock"},
+     *             @OA\Property(property="name", type="string", example="Es Teh"),
+     *             @OA\Property(property="price", type="number", example=3000),
+     *             @OA\Property(property="stock", type="integer", example=100),
+     *             @OA\Property(property="description", type="string", example="Es teh manis segar")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Product added",
+     *         @OA\JsonContent(ref="#/components/schemas/Product")
+     *     )
+     * )
+     */
     public function addProduct(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -130,7 +187,17 @@ class MerchantController extends Controller
     }
 
     /**
-     * Merchant Sales History
+     * @OA\Get(
+     *     path="/merchant/sales",
+     *     summary="Get merchant sales history",
+     *     tags={"Merchant"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sales history",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Transaction"))
+     *     )
+     * )
      */
     public function salesHistory(Request $request)
     {

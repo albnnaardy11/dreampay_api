@@ -1,0 +1,1 @@
+{"title":"Body","body":{"required":true,"content":{"application/json":{"schema":{"required":["pin"],"properties":{"pin":{"type":"string","example":"123456"}},"type":"object"}}}}}

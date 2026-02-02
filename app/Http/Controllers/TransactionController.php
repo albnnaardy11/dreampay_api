@@ -10,12 +10,38 @@ use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/transactions",
+     *     summary="List all transactions (Admin)",
+     *     tags={"Transactions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of transactions",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Transaction"))
+     *     )
+     * )
+     */
     public function index()
     {
         $transactions = Transaction::with(['user', 'recipient', 'category'])->latest()->get();
         return response()->json($transactions, 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/history",
+     *     summary="Get authenticated user transaction history",
+     *     tags={"Transactions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="User transaction history",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Transaction"))
+     *     )
+     * )
+     */
     public function userHistory(Request $request)
     {
         $transactions = Transaction::where('user_id', $request->user()->id)
@@ -26,6 +52,36 @@ class TransactionController extends Controller
         return response()->json($transactions, 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/transactions",
+     *     summary="Create a new payment transaction",
+     *     tags={"Transactions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"user_id","amount","description"},
+     *             @OA\Property(property="user_id", type="integer", example=1),
+     *             @OA\Property(property="amount", type="number", example=15000),
+     *             @OA\Property(property="description", type="string", example="Beli Nasi Goreng"),
+     *             @OA\Property(property="category_id", type="integer", example=2)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Payment successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Payment successful"),
+     *             @OA\Property(property="transaction", ref="#/components/schemas/Transaction"),
+     *             @OA\Property(property="current_balance", type="number", example=35000),
+     *             @OA\Property(property="points_earned", type="integer", example=15)
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Insufficient balance or validation error"),
+     *     @OA\Response(response=404, description="User not found")
+     * )
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -87,6 +143,21 @@ class TransactionController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/transactions/{id}",
+     *     summary="Get transaction details",
+     *     tags={"Transactions"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Transaction details",
+     *         @OA\JsonContent(ref="#/components/schemas/Transaction")
+     *     ),
+     *     @OA\Response(response=404, description="Transaction not found")
+     * )
+     */
     public function show(string $id)
     {
         $transaction = Transaction::with(['user', 'recipient', 'category'])->find($id);

@@ -11,8 +11,8 @@
     },
     "servers": [
         {
-            "url": "http://localhost/api",
-            "description": "Local Development Server"
+            "url": "https://albnnaardy11.github.io/dreampay-api",
+            "description": "GitHub Pages Mock Server (Documentation Only)"
         },
         {
             "url": "https://api.dreampay.id/api",
@@ -75,7 +75,8 @@
                                             "example": "User registered successfully"
                                         },
                                         "access_token": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "1|qh37J8dJ0lS6..."
                                         },
                                         "token_type": {
                                             "type": "string",
@@ -132,7 +133,8 @@
                                 "schema": {
                                     "properties": {
                                         "access_token": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "example": "1|qh37J8dJ0lS6..."
                                         },
                                         "token_type": {
                                             "type": "string",
@@ -812,10 +814,12 @@
                                             "$ref": "#/components/schemas/Transaction"
                                         },
                                         "current_balance": {
-                                            "type": "number"
+                                            "type": "number",
+                                            "example": 35000
                                         },
                                         "points_earned": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "example": 15
                                         }
                                     },
                                     "type": "object"

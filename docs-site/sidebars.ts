@@ -39,7 +39,17 @@ const sidebars: SidebarsConfig = {
         },
       ],
     },
-    'security-best-practices', // Example of top-level doc
+    {
+      type: 'category',
+      label: 'Features Guide',
+      items: [
+        'auth',
+        'merchant',
+        'santri',
+        'admin',
+      ],
+    },
+    'security', 
   ],
 };
 
